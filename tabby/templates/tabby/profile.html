@@ -8,8 +8,13 @@
 </head>
 <body>
     hello
+    <h1>QUESTIONS</h1>
     {% for question in questions %}
-    <p>question</p>
+    <p>{{ question }}</p>
+    {% endfor %}
+    <h1>ANSWERS</h1>
+    {% for answer in answers %}
+    <p>answer</p>
     {% endfor %}
 </body>
 </html>

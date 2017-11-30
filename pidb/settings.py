@@ -78,9 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pidb',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
+        'USER': 'loulis',
+        'PASSWORD': 'qw738214118',
+        'HOST': '123.206.51.21',
         'PORT': '3306',
     }
 }

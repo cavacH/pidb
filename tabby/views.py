@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib import auth
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from .models import Tuser
+from django.utils import timezone
+from .models import Tuser, Question
 
 def login(request):
     if request.method == 'POST':
@@ -9,13 +11,14 @@ def login(request):
         password = request.POST.get('password', None)
         user = authenticate(username=name, password=password)
         if user is not None:
+            auth.login(request, user)
             question_list = user.tuser.question_set.all()
             q_name_list = []
             for question in question_list:
-                q_name_list.append(question.name)
-            return render(request, 'tabby/profile.html', {})
+                q_name_list.append(question.title)
+            return render(request, 'tabby/profile.html', {'questions': q_name_list})
         else:
-            return render(request, 'tabby/error.html', {})
+            return render(request, 'tabby/error.html', {'err_msg': 'incorrect username or password.'})
     else:
         return render(request, 'tabby/login.html', {})
 
@@ -33,3 +36,18 @@ def register(request):
         else:
             return render(request, 'tabby/userExist.html', {})
 
+def newQuestion(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            title = request.POST.get('title', None)
+            category = request.POST.get('category', None)
+            description = request.POST.get('description', None)
+            put_time = timezone.now()
+            tuser = request.user.tuser
+            new_q = Question(tuser=tuser, title=title, category=category, description=description, put_time=put_time)
+            new_q.save()
+            return render(request, 'tabby/profile.html', {})
+        else:
+            return render(request, 'tabby/error.html', {'err_msg': 'not login...'})
+    else:
+        return render(request, 'tabby/new_question.html', {})
