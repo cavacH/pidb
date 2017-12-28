@@ -1,0 +1,58 @@
+.votes {
+    display: inline-block;
+    height: 40px;
+    width: 45px;
+    margin: 0 6px;
+}
+
+.answers-r {
+    display: inline-block;
+    height: 40px;
+    width: 45px;
+    margin: 0 6px;
+    background-color: #AD3A37;
+    color: #fff;
+}
+
+.answers-g {
+    display: inline-block;
+    height: 40px;
+    width: 45px;
+    margin: 0 6px;
+    background-color: #017E66;
+    color: #fff;
+}
+
+.qa_rank div {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.author {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.author a {
+    color: #999;
+}
+
+.tag-list {
+    padding-left: 0px;
+    display: inline-block;
+}
+
+.title {
+    display: inline-block;
+    margin: 0 5px 0 0;
+    font-size: 16px;
+}
+
+.tag-list li {
+    list-style: none;
+    display: inline-block;
+}
+
+.card-header {
+    margin-bottom: 15px;
+}

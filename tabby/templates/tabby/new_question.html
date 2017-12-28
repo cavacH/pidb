@@ -1,24 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <form action="{% url 'tabby:new_question' %}" method="post">
+{% extends "tabby/base.html" %}
+{% block title %}
+New Question
+{% endblock title %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/tag.css" %}">
+{% endblock css %}
+{% block content %}
+<div class="container">
+    <form action="{% url 'tabby:new_question' %}" method="POST">
     {% csrf_token %}
-        title:
-        <input type="text" name="title">
-        <br>
-        category:
-        <input type="number" name="category">
-        <br>
-        description:
-        <input type="text" name="description">
-        <br>
-        <input type="submit" value="submit">
+        <div class="form-group">
+            <input class="form-control" type="text" name="title" placeholder="Title:">
+        </div>
+        <div class="form-group">
+            <input class="form-control hidden" type="text" name="tags" id="tags">
+            <div class="tag-input" data-tag="{{ all_taglist|safe }}">
+                <span class="tag selected-tag"></span>
+                <span class="tag selected-tag"></span>
+                <span class="tag selected-tag"></span>
+                <span class="tag selected-tag"></span>
+                <span class="tag selected-tag"></span>
+                <input class="tag-text-area" type="text" placeholder="Choose at most 5 tags">
+                <ul class="dropdown-menu">
+                </ul>
+            </div>
+            <div class="default-tag" style="display: none;">
+                <ul class="default-taglist">
+                {% for dt in default_taglist %}
+                    <li class="tag"><a class="alt-tag" href="javascript: void(0)">{{ dt }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="editor"></div>
+            <textarea class="form-control hidden" name="description" id="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default" onclick="return handleTags()">Submit</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor.js" %}"></script>
+<script>
+	var editor = CKEDITOR.replace('editor')
+    var all_taglist = $('.tag-input').data('tag')
+    all_taglist = all_taglist.substr(2, all_taglist.length - 4).split("', '")
+    var selected_tag = $('.selected-tag').toArray()
+    var tta = $('.tag-text-area')
+    var selected_tag_num = 0
+    for(let i = 0; i < selected_tag.length; ++i) {
+        $(selected_tag[i]).hide()
+    }
+    changeOffset()
+
+    tta.on('input propertychange', function() {
+        $('.dropdown-menu').text('')
+        var cur_str = $(this).val()
+        var count = 0
+        for(let i = 0; i < all_taglist.length; ++i) {
+            if(all_taglist[i].indexOf(cur_str) == 0) {
+                $('.dropdown-menu').append(
+                    '<li onclick="addTag(\''+all_taglist[i]+'\')"><a class="alt-tag" href="javascript: void(0)">'
+                        + all_taglist[i]
+                        + '</a></li>'
+                )
+                ++count
+                if(count > 5) {
+                    break;
+                }
+            }
+        }
+        $('.dropdown-menu').show()
+        $('.default-tag').hide()
+    })
+    tta.keydown(function(e) {
+        if(e.keyCode == 8) {
+            if(tta.val() == '') {
+                --selected_tag_num
+                $(selected_tag[selected_tag_num]).hide()
+                changeOffset()
+            }
+        }
+    })
+    $('.default-tag').hide()
+    $('.alt-tag').on('click', addTag)
+    $('.dropdown-menu').on('click', function(e) {
+        e.stopPropagation()
+    })
+    $('.tag-input').on('click', function(e) {
+        if(tta.val().length == 0) {
+            $('.default-tag').show()
+        }
+        $(document).one('click', function() {
+            $('.default-tag').hide()
+            $('.dropdown-menu').hide()
+            tta.val('')
+        })
+        e.stopPropagation()
+    })
+    $('.default-tag').on('click', function(e) {
+        e.stopPropagation()
+    })
+
+    function addTag(val) {
+        if(selected_tag_num >= 5) {
+            return
+        }
+        tta.val('')
+        $(selected_tag[selected_tag_num]).text($(this).text()||val)
+        $(selected_tag[selected_tag_num]).show()
+        ++selected_tag_num
+        changeOffset()
+    }
+
+    function changeOffset() {
+        $('.default-tag').css('left', tta.offset().left)
+        $('.dropdown-menu').css('left', tta.position().left)
+        $('.dropdown-menu').hide()
+        $('.default-tag').show()
+    }
+
+    function handleTags() {
+        var selected_tag_name = new Array()
+        var description = CKEDITOR.instances.editor.getData()
+        $('#description').val(description)
+        for(let i = 0; i < selected_tag_num; ++i) {
+            selected_tag_name[i] = $(selected_tag[i]).text()
+        }
+        $('#tags').val(selected_tag_name.join())
+        return true
+    }
+</script>
+{% endblock scripts %}

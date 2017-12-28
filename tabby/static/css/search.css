@@ -1,0 +1,54 @@
+p { word-wrap:break-word; }
+
+section {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.question p {
+    color: #999;
+}
+
+.user img {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+.user div {
+    display: inline-block;
+}
+
+.tag-label {
+    margin-left: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+    padding: 0 6px;
+    color: #017E66;
+    background-color: rgba(1,126,102,0.08);
+    height: 30px;
+    line-height: 30px;
+    font-weight: normal;
+    font-size: 16px;
+    text-align: center;
+}
+
+span a:link {
+    text-decoration: none;
+    color: inherit;
+}
+
+span a:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+span a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+span a:active {
+    text-decoration: none;
+    color: inherit;
+}
